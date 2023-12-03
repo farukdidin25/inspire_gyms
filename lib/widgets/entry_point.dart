@@ -22,6 +22,7 @@ class _EntryPointState extends State<EntryPoint> {
     const HomePage(),
     const FavoritiesPage(),
     const ProfilePage(),
+
   ];
 
   @override
@@ -49,16 +50,17 @@ class _EntryPointState extends State<EntryPoint> {
             tabs: const [
               GButton(
                 icon: Icons.home_outlined,
-                text: 'Home',
+                text: 'Ana Sayfa',
               ),
               GButton(
                 icon: Icons.favorite_border,
-                text: 'Likes',
+                text: 'Favoriler',
               ),
               GButton(
                 icon: Icons.person_2_outlined,
-                text: 'Profile',
+                text: 'Profil',
               ),
+              
             ],
           ),
         ),
