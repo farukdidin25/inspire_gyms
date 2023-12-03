@@ -1,3 +1,5 @@
+// ignore_for_file: use_key_in_widget_constructors
+
 import 'package:flutter/material.dart';
 import 'package:inspire_gyms/constants/app_colors.dart';
 
@@ -9,7 +11,7 @@ class InfoPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.quaternaryColor,
-        title: Text('Hakkımda'),
+        title: const Text('Hakkımda'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -33,17 +35,17 @@ class InfoPage extends StatelessWidget {
     return Row(
       children: [
         Icon(icon, size: 24),
-        SizedBox(width: 8),
+        const SizedBox(width: 8),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               '$title:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             Text(
               content,
-              style: TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18),
             ),
           ],
         ),

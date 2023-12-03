@@ -22,10 +22,10 @@ class _FavoritiesPageState extends State<FavoritiesPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.quaternaryColor,
-        title: Text('Favorilerim'),
+        title: const Text('Favorilerim'),
       ),
       body: favoriListesi.isEmpty
-          ? Center(
+          ? const Center(
               child: Text('Henüz favori öğe eklenmedi.'),
             )
           : ListView.builder(

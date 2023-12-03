@@ -9,7 +9,7 @@ class HowTo extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.quaternaryColor,
-        title: Text('Kullanım Talimatı'),
+        title: const Text('Kullanım Talimatı'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -24,7 +24,7 @@ class HowTo extends StatelessWidget {
                   '3. Yer alan seçeneklerden istediğinize erişin.\n'
                   '4. Favori bir yeriniz varsa bunu favorilere eklemeyi unutmayın!',
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             buildInstructionSection(
               icon: Icons.info,
               title: 'Neden Kullanılır',
@@ -47,17 +47,17 @@ class HowTo extends StatelessWidget {
         Row(
           children: [
             Icon(icon),
-            SizedBox(width: 8),
+            const SizedBox(width: 8),
             Text(
               title,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ],
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         Text(description),
       ],
     );

@@ -29,7 +29,7 @@ class _EntryPointState extends State<EntryPoint> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const MyAppBar(),
-      drawer: MyDrawer(),
+      drawer: const MyDrawer(),
       body: _pages[_selectedIndex],
       bottomNavigationBar: Container(
         color: AppColors.quaternaryColor,
