@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:inspire_gyms/constants/app_colors.dart';
 import 'package:inspire_gyms/screens/favourites_page.dart';
-import 'package:inspire_gyms/screens/ProfilePage.dart';
+import 'package:inspire_gyms/screens/profile_page.dart';
 import 'package:inspire_gyms/screens/home_page.dart';
 import 'package:inspire_gyms/widgets/appbar_widget.dart';
 import 'package:inspire_gyms/widgets/drawer_widget.dart';
