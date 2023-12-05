@@ -2,9 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:inspire_gyms/constants/api.dart';
+
 import 'package:inspire_gyms/screens/gym_detail_page.dart';
-import 'package:inspire_gyms/services/gym_service.dart';
-import 'package:inspire_gyms/services/location_service.dart';
+import 'package:inspire_gyms/services/favorities_services.dart';
+import 'package:inspire_gyms/services/gym_services.dart';
+import 'package:inspire_gyms/services/location_services.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -14,7 +16,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final String apiKey = Api.apiKey; // API anahtarınızı buraya yerleştirin
+  final String apiKey = Api.apiKey;
   late final GymService _gymService;
   late final LocationService _locationService;
   List<dynamic> gymList = [];
@@ -71,6 +73,62 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Widget _buildGymTile(dynamic gym) {
+    return FutureBuilder<List<String>>(
+      future: FavoritesService().getFavoriteGyms(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        } else {
+          if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            bool isFavorite = snapshot.data!.contains(gym['name']);
+
+            return ListTile(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => GymDetailPage(gym: gym),
+                  ),
+                );
+              },
+              title: Text(gym['name']),
+              leading: gym['photoReference'] != ''
+                  ? Image.network(
+                      "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${gym['photoReference']}&key=$apiKey",
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.cover,
+                    )
+                  : Container(
+                      width: 50,
+                      height: 50,
+                      color: Colors.grey,
+                    ),
+              trailing: IconButton(
+                icon: Icon(
+                  isFavorite ? Icons.favorite : Icons.favorite_border,
+                  color: isFavorite ? Colors.red : null,
+                ),
+                onPressed: () {
+                  setState(() {
+                    if (isFavorite) {
+                      FavoritesService().removeFavorite(gym);
+                    } else {
+                      FavoritesService().addFavorite(gym);
+                    }
+                  });
+                },
+              ),
+            );
+          }
+        }
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,24 +152,8 @@ class _HomePageState extends State<HomePage> {
                     itemCount: filteredGyms.length,
                     itemBuilder: (context, index) {
                       final gym = filteredGyms[index];
-                      return ListTile(
-                        onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=>GymDetailPage(gym: gym)));
-                        },
-                        title: Text(gym['name']),
-                        leading: gym['photoReference'] != ""
-                            ? Image.network(
-                                "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${gym['photoReference']}&key=$apiKey",
-                                width: 50,
-                                height: 50,
-                                fit: BoxFit.cover,
-                              )
-                            : Container(
-                                width: 50,
-                                height: 50,
-                                color: Colors.grey,
-                              ),
-                      );
+                      return _buildGymTile(
+                          gym); // _buildGymTile widget'ı burada çağrılıyor
                     },
                   ),
           ),

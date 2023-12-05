@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:inspire_gyms/constants/app_colors.dart';
-import 'package:inspire_gyms/screens/favourites_page.dart';
+import 'package:inspire_gyms/screens/favorites_page.dart';
 import 'package:inspire_gyms/screens/home_page.dart';
-import 'package:inspire_gyms/screens/map_page.dart';
+import 'package:inspire_gyms/screens/geolocation_app_page.dart';
 import 'package:inspire_gyms/widgets/appbar_widget.dart';
 import 'package:inspire_gyms/widgets/drawer_widget.dart';
 
@@ -20,8 +20,8 @@ class _EntryPointState extends State<EntryPoint> {
 
   final List<Widget> _pages = const [
     HomePage(),
-    FavoritiesPage(),
-    MapPage(),
+    FavoritesPage(),
+    GeoLocationApp(),
   ];
 
   @override
