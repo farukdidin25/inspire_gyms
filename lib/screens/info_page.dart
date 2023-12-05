@@ -18,6 +18,13 @@ class InfoPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const Center(
+              // Bu kısımda kendi fotoğrafınızı ekleyin
+              child: CircleAvatar(
+                radius: 85,
+                backgroundImage: AssetImage('assets/images/profil.jpeg'), // Fotoğraf dosyanızın yolu
+              ),
+            ),
             buildInfoRow('Ad', 'Ömer Faruk', Icons.person),
             buildInfoRow('Soyad', 'Didin', Icons.person),
             buildInfoRow('Üniversite', 'Erciyes Üniversitesi', Icons.school),

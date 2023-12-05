@@ -1,99 +1,73 @@
-import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:http/http.dart' as http; 
+import 'package:inspire_gyms/constants/api.dart';
+import 'package:inspire_gyms/screens/gym_detail_page.dart';
+import 'package:inspire_gyms/services/gym_service.dart';
+import 'package:inspire_gyms/services/location_service.dart';
+
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  final String apiKey = 'AIzaSyAkz8HaFrmjTwIiDxey04Lnrn0C5bIi8iU';
-  final String endpoint =
-      'https://places.googleapis.com/v1/places:searchNearby';
-
-  List<String> gymList = [];
-
-  String _searchQuery = '';
-
-  List<String> get filteredGyms {
-    return gymList.where((gym) {
-      return gym.toLowerCase().contains(_searchQuery.toLowerCase());
-    }).toList();
-  }
+  final String apiKey = Api.apiKey; // API anahtarınızı buraya yerleştirin
+  late final GymService _gymService;
+  late final LocationService _locationService;
+  List<dynamic> gymList = [];
+  List<dynamic> filteredGyms = [];
 
   @override
   void initState() {
     super.initState();
-    fetchNearbyGyms().then((gyms) {
-      setState(() {
-        gymList = gyms;
-      });
-    }).catchError((error) {});
+    _gymService = GymService(apiKey);
+    _locationService = LocationService();
+    _getLocationAndFetchGyms();
   }
 
-  Future<Position> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      throw 'Location services are disabled.';
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        throw 'Location permissions are denied.';
+  Future<void> _getLocationAndFetchGyms() async {
+    try {
+      Position position = await _locationService.getCurrentPosition();
+      await _fetchNearbyGyms(position);
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error getting location: $e');
       }
     }
-
-    if (permission == LocationPermission.deniedForever) {
-      throw 'Location permissions are permanently denied, we cannot request permissions.';
-    }
-
-    return await Geolocator.getCurrentPosition();
   }
 
-  Future<List<String>> fetchNearbyGyms() async {
-    Position position = await _determinePosition();
-    final double latitude = position.latitude;
-    final double longitude = position.longitude;
-    final String requestUrl = '$endpoint?key=$apiKey';
-    final Map<String, dynamic> requestData = {
-      "includedTypes": ["gym"],
-      "locationRestriction": {
-        "circle": {
-          "center": {"latitude": latitude, "longitude": longitude},
-          "radius": 2000.0
-        }
+  Future<void> _fetchNearbyGyms(Position position) async {
+    try {
+      List<dynamic> nearbyGyms = await _gymService.fetchNearbyGyms(position);
+      await _fetchGymDetails(nearbyGyms);
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error fetching nearby gyms: $e');
       }
-    };
+    }
+  }
 
-    final response = await http.post(
-      Uri.parse(requestUrl),
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Goog-Api-Key': apiKey,
-        'X-Goog-FieldMask': 'places.displayName'
-      },
-      body: jsonEncode(requestData),
-    );
-
-    if (response.statusCode == 200) {
-      final jsonData = json.decode(response.body);
-      List<String> gymNames = [];
-
-      for (var place in jsonData['places']) {
-        gymNames.add(place['displayName']['text']);
+  Future<void> _fetchGymDetails(List<dynamic> places) async {
+    try {
+      List<dynamic> newGymList = [];
+      for (var place in places) {
+        final placeId = place['place_id'];
+        dynamic gymDetails = await _gymService.fetchGymDetails(placeId);
+        newGymList.add(gymDetails);
       }
-
-      return gymNames;
-    } else {
-      throw Exception('Failed to load gyms');
+      if (mounted) {
+        setState(() {
+          gymList = newGymList;
+          filteredGyms = newGymList;
+        });
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error fetching gym details: $e');
+      }
     }
   }
 
@@ -110,34 +84,48 @@ class _HomePageState extends State<HomePage> {
                 hintText: 'Search...',
                 prefixIcon: Icon(Icons.search),
               ),
-              onChanged: (value) {
-                setState(() {
-                  _searchQuery = value;
-                });
-              },
+              onChanged: _updateFilteredGyms,
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: filteredGyms.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  child: ListTile(
-                    leading: const CircleAvatar(
-                      backgroundImage: NetworkImage(
-                          'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg'),
-                    ),
-                    title: Text(filteredGyms[index]),
-                    // Buraya gerekirse diğer bilgileri ekleyebilirsiniz.
+            child: gymList.isEmpty
+                ? const Center(child: CircularProgressIndicator())
+                : ListView.builder(
+                    itemCount: filteredGyms.length,
+                    itemBuilder: (context, index) {
+                      final gym = filteredGyms[index];
+                      return ListTile(
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=>GymDetailPage(gym: gym)));
+                        },
+                        title: Text(gym['name']),
+                        leading: gym['photoReference'] != ""
+                            ? Image.network(
+                                "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${gym['photoReference']}&key=$apiKey",
+                                width: 50,
+                                height: 50,
+                                fit: BoxFit.cover,
+                              )
+                            : Container(
+                                width: 50,
+                                height: 50,
+                                color: Colors.grey,
+                              ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
           ),
         ],
       ),
     );
   }
+
+  void _updateFilteredGyms(String query) {
+    setState(() {
+      filteredGyms = gymList
+          .where(
+              (gym) => gym['name'].toLowerCase().contains(query.toLowerCase()))
+          .toList();
+    });
+  }
 }
-
-

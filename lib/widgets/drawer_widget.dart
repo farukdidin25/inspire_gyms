@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:inspire_gyms/constants/app_colors.dart';
-import 'package:inspire_gyms/screens/home_page.dart';
 import 'package:inspire_gyms/screens/howto_page.dart';
 import 'package:inspire_gyms/screens/info_page.dart';
-import 'package:inspire_gyms/widgets/entry_point.dart';
 import 'package:inspire_gyms/widgets/gradient_text_widget.dart';
 
 class MyDrawer extends StatelessWidget {
+  final void Function(int) onDrawerItemTap;
+  final int selectedIndex;
   const MyDrawer({
-    super.key,
+    super.key, required this.onDrawerItemTap, required this.selectedIndex,
   });
 
   @override
@@ -23,15 +23,8 @@ class MyDrawer extends StatelessWidget {
               child: Center(
                 child: GestureDetector(
                   onTap: () {
-                    // Image'a tıklandığında HomePage'e git
-                    Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => const HomePage()),
-                    );
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const EntryPoint(),
-                      ),
-                    );
+                    onDrawerItemTap(0);
+                    Navigator.pop(context);
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
