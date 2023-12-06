@@ -38,7 +38,7 @@ class _EntryPointState extends State<EntryPoint> {
       bottomNavigationBar: Container(
         color: AppColors.quaternaryColor,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
           child: GNav(
             backgroundColor: AppColors.quaternaryColor,
             color: AppColors.secondaryColor,

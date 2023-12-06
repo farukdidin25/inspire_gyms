@@ -139,7 +139,7 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               decoration: const InputDecoration(
-                hintText: 'Search...',
+                hintText: 'Arama...',
                 prefixIcon: Icon(Icons.search),
               ),
               onChanged: _updateFilteredGyms,

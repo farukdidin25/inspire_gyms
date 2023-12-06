@@ -10,7 +10,7 @@ class FavoritesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Favorites'),
+        title: const Text('Favoriler'),
         backgroundColor: AppColors.backgroundColor,
       ),
       body: FutureBuilder<List<String>>(
@@ -25,7 +25,7 @@ class FavoritesPage extends StatelessWidget {
               List<String>? favoriteGyms = snapshot.data;
 
               if (favoriteGyms == null || favoriteGyms.isEmpty) {
-                return const Center(child: Text('No favorite gyms yet!'));
+                return const Center(child: Text('Şimdilik Favori Gym Yok !'));
               }
 
               return ListView.builder(

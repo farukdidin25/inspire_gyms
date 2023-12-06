@@ -19,7 +19,6 @@ class InfoPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Center(
-              // Bu kısımda kendi fotoğrafınızı ekleyin
               child: CircleAvatar(
                 radius: 85,
                 backgroundImage: AssetImage('assets/images/profil.jpeg'), // Fotoğraf dosyanızın yolu

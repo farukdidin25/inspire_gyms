@@ -16,6 +16,12 @@ class HowTo extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const Center(
+              child: CircleAvatar(
+                radius: 85,
+                backgroundImage: AssetImage('assets/icons/location.png'), // Fotoğraf dosyanızın yolu
+              ),
+            ),
             buildInstructionSection(
               icon: Icons.location_on,
               title: 'Nasıl Kullanılır',

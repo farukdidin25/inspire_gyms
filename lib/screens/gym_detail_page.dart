@@ -35,9 +35,9 @@ class GymDetailPage extends StatelessWidget {
             const SizedBox(height: 20),
             Text(
               '${gym['name']}',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 12),
             Text(
               'Address: ${gym['address'] ?? 'No address'}',
               style: const TextStyle(fontSize: 16),
