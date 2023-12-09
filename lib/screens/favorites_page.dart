@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:inspire_gyms/constants/app_colors.dart';
 import 'package:inspire_gyms/services/favorities_services.dart';
 
-
 class FavoritesPage extends StatelessWidget {
-  const FavoritesPage({super.key});
+  const FavoritesPage({Key? key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Favoriler'),
-        backgroundColor: AppColors.backgroundColor,
+        backgroundColor: AppColors.quaternaryColor,
       ),
       body: FutureBuilder<List<String>>(
         future: FavoritesService().getFavoriteGyms(),
@@ -32,8 +31,15 @@ class FavoritesPage extends StatelessWidget {
                 itemCount: favoriteGyms.length,
                 itemBuilder: (context, index) {
                   String gymName = favoriteGyms[index];
+
                   return ListTile(
-                    title: Text(gymName),
+                    title: Row(
+                      children: [
+                        Icon(Icons.favorite, color: Colors.red), // Heart icon
+                        SizedBox(width: 8), // Add some space between icon and text
+                        Text(gymName),
+                      ],
+                    ),
                     // Diğer widget'lar burada
                   );
                 },
